@@ -38,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
 
     private ArrayList<ModelIdol> getDummyDatas() {
 
-        ArrayList<ModelIdol> arrayList = new ArrayList<ModelIdol>();
+        ArrayList<ModelIdol> arrayList = new ArrayList<>();
 
         arrayList.add(new ModelIdol("http://cfile4.uf.tistory.com/image/2616153D56C08D6005C29F", "설현", 10000000));
         arrayList.add(new ModelIdol("http://cfile5.uf.tistory.com/image/2271EB46530613D3309DC1", "초아", 10000000));

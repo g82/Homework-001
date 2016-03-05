@@ -55,6 +55,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     private class LoginApiTask extends AsyncTask<String, Void, Boolean> {
 
+        private static final String TAG = "LoginApiTask";
+
         @Override
         protected Boolean doInBackground(String... params) {
 
@@ -76,7 +78,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                         .appendQueryParameter("user_pw", password);
                 String query = builder.build().getEncodedQuery();
 
-                Log.d("query", query);
+                Log.d(TAG, query);
 
                 OutputStream os = urlConnection.getOutputStream();
                 BufferedWriter writer = new BufferedWriter(
@@ -105,10 +107,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 return result.equals("success");
 
             } catch (MalformedURLException e) {
-                Log.d("Login" , e.getMessage());
+                Log.d(TAG , e.getMessage());
                 return false;
             } catch (IOException e) {
-                Log.d("Login", e.getMessage());
+                Log.d(TAG, e.getMessage());
                 return false;
             }
         }
