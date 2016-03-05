@@ -1,16 +1,22 @@
 package com.madwhale.g82.homework_001;
 
+import android.net.Uri;
 import android.os.AsyncTask;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.madwhale.g82.homework_001.server.ServerAPI;
 
 import java.io.BufferedInputStream;
+import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -57,9 +63,31 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
             try {
 
-                URL url = new URL(ServerAPI.LOGIN + "?email=" + email + "&password=" + password);
+                //URL url = new URL(ServerAPI.LOGIN + "?email=" + email + "&password=" + password);
+                URL url = new URL(ServerAPI.LOGIN);
 
                 HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+                urlConnection.setRequestMethod("POST");
+                urlConnection.setDoInput(true);
+                urlConnection.setDoOutput(true);
+
+                Uri.Builder builder = new Uri.Builder()
+                        .appendQueryParameter("user_id", email)
+                        .appendQueryParameter("user_pw", password);
+                String query = builder.build().getEncodedQuery();
+
+                Log.d("query", query);
+
+                OutputStream os = urlConnection.getOutputStream();
+                BufferedWriter writer = new BufferedWriter(
+                        new OutputStreamWriter(os, "UTF-8"));
+                writer.write(query);
+                writer.flush();
+                writer.close();
+                os.close();
+
+                urlConnection.connect();
+
                 InputStream in = new BufferedInputStream(urlConnection.getInputStream());
                 StringBuilder stringBuilder = new StringBuilder();
 
@@ -74,12 +102,13 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
                 String result = stringBuilder.toString();
 
-                if (result.equals("success")) return true;
-                else return false;
+                return result.equals("success");
 
             } catch (MalformedURLException e) {
+                Log.d("Login" , e.getMessage());
                 return false;
             } catch (IOException e) {
+                Log.d("Login", e.getMessage());
                 return false;
             }
         }
@@ -87,6 +116,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         @Override
         protected void onPostExecute(Boolean aBoolean) {
             super.onPostExecute(aBoolean);
+
+            Toast.makeText(LoginActivity.this, aBoolean.toString(), Toast.LENGTH_SHORT).show();
+
         }
 
     }
